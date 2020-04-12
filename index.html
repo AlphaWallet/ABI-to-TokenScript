@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <title>ABI to TokenScript</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/628px-Ethereum_logo_2014.svg.png">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./bundle.js"></script>
+</head>
+<body>
+<div class="jumbotron">
+    <div id="titles">
+        <h1>Contract ABI to TokenScript</h1>
+    </div>
+</div>
+<div id="panel">
+    <h3>Contract address</h3>
+    <label for="contractAddress"></label><input id="contractAddress" class="form-control" type="text" placeholder="your smart contract address">
+    <h3>Contract ABI</h3>
+    <label for="contractABI"></label><textarea class="form-control" rows="12" id="contractABI" placeholder="your smart contract ABI"></textarea>
+    <h3>Contract name</h3>
+    <label for="contractName"></label><input id="contractName" class="form-control" type="text" placeholder="your smart contract name">
+    <br>
+    <br>
+    <input type="radio" id="erc20" name="erc" value="erc20" checked="checked">
+    <label for="erc20">erc20</label><br>
+    <input type="radio" id="erc721" name="erc" value="erc721">
+    <label for="erc721">erc721</label><br>
+    <br>
+    <input id="create" type="button" class="btn btn-success" value="Create your TokenScript!"/>
+</div>
+</body>
+</html>

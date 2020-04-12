@@ -15,11 +15,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const testABI = templates.exampleABI;
 
     let domParser = new DOMParser();
-    //TODO get from user input
-    let contractName = "";
-    let contractAddress = "";
 
-    function start(erc, abi) {
+    document.getElementById("create").addEventListener("click", function () {
+        let contractName = document.getElementById("contractName").value;
+        let contractAddress = document.getElementById("contractAddress").value;
+        //TODO change back
+        let ABI = testABI; //document.getElementById("contractABI").value;
+        let erc20Checked = document.getElementById("erc20").checked;
+        if(erc20Checked) {
+            start(ERC.ERC20, ABI, contractAddress, contractName);
+        } else {
+            start(ERC.ERC721, ABI, contractAddress, contractName);
+        }
+    });
+
+
+    function start(erc, abi, contractAddress, contractName) {
         let xmlFile;
         switch(erc) {
             case ERC.ERC20:
@@ -29,11 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 xmlFile = domParser.parseFromString(templates.erc721XML, "application/xml");
                 break;
         }
-        //TODO change back to user input
-        init(testABI, xmlFile);
+        setValuesFromABI(abi, xmlFile, contractAddress, contractName);
     }
 
-    function init(abi, xmlFile) {
+    function setValuesFromABI(abi, xmlFile) {
         let attributesToAdd = [];
         let eventsToAdd = [];
         for(let func of abi) {
