@@ -59,20 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
             }
         }
-        appendAttributesToTS(attributesToAdd, xmlFile);
-        appendEvents(eventsToAdd, xmlFile);
+        let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
+        download("TokenScript.xml", updatedXML);
     }
 
-    function appendAttributesToTS(attributes, xmlFile) {
+    function appendToTS(attributes, events, xmlFile) {
         for(let attribute of attributes) {
-            xmlFile.getElementsByTagName("attribute-types")[0].appendChild(attribute);
+            xmlFile.getElementById("attribute-types").appendChild(attribute);
         }
-    }
-
-    function appendEvents(events, xmlFile) {
         for(let event of events) {
             xmlFile.appendChild(event);
         }
+        return xmlFile;
     }
 
     function getEvent(eventName, contractName, contractAddress, eventABI) {
@@ -152,6 +150,16 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             return "void";
         }
+    }
+
+    function download(filename, text) {
+        let element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
     }
 
 });
