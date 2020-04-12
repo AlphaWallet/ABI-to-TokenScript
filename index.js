@@ -19,8 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("create").addEventListener("click", function () {
         let contractName = document.getElementById("contractName").value;
         let contractAddress = document.getElementById("contractAddress").value;
-        //TODO change back
-        let ABI = testABI; //document.getElementById("contractABI").value;
+        let ABI = JSON.parse(document.getElementById("contractABI").value);
         let erc20Checked = document.getElementById("erc20").checked;
         if(erc20Checked) {
             start(ERC.ERC20, ABI, contractAddress, contractName);
@@ -40,48 +39,49 @@ document.addEventListener("DOMContentLoaded", () => {
                 xmlFile = domParser.parseFromString(templates.erc721XML, "application/xml");
                 break;
         }
+        xmlFile = setContractDetails(xmlFile, contractName, contractAddress);
         setValuesFromABI(abi, xmlFile, contractAddress, contractName);
     }
 
-    function setValuesFromABI(abi, xmlFile) {
+    function setValuesFromABI(abi, xmlFile, contractAddress, contractName) {
         let attributesToAdd = [];
         let eventsToAdd = [];
         for(let func of abi) {
             switch(func.type) {
                 case Types.FUNCTION:
-                    attributesToAdd.push(parseFunctionToAttribute(func));
+                    let attribute = parseFunctionToAttribute(func, contractAddress);
+                    if(attribute !== "") attributesToAdd.push(attribute);
                     break;
                 case Types.EVENT:
-                    eventsToAdd.push(getEvent(func.name, contractName, contractAddress, func));
+                    let event = getEvent(func.name, contractName, contractAddress, func);
+                    eventsToAdd.push(event);
                     break;
                 case Types.TUPLE:
                     break;
             }
         }
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
-        download("TokenScript.xml", updatedXML);
+        let xmlAsString = new XMLSerializer().serializeToString(updatedXML);
+        download("TokenScript.xml", xmlAsString);
     }
 
+    //TODO pass by ref rather than value
     function appendToTS(attributes, events, xmlFile) {
+        let child = xmlFile.getElementsByTagName("ts:contract")[0];
         for(let attribute of attributes) {
-            xmlFile.getElementById("attribute-types").appendChild(attribute);
+            xmlFile.getElementsByTagName("ts:attribute-types")[0].appendChild(attribute);
         }
         for(let event of events) {
-            xmlFile.appendChild(event);
+            xmlFile.getElementsByTagName("ts:token")[0].insertBefore(event, child);
         }
         return xmlFile;
     }
 
-    function getEvent(eventName, contractName, contractAddress, eventABI) {
-        let eventParams = getEventParams(eventABI);
-        return `<ts:contract name="${contractName}">
-                    <ts:address network="1">${contractAddress}</ts:address>
-                    <asnx:module name="${eventName}">
-                      <sequence>
-                        ${eventParams}
-                      </sequence>
-                    </asnx:module>
-                </ts:contract>`;
+    function setContractDetails(xmlFile, contractName, contractAddress) {
+        xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
+        xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
+        xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
+        return xmlFile;
     }
 
     function getEventParams(eventAbi) {
@@ -102,17 +102,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getAttribute(func, contractName) {
         let data = getData(func);
-        return `
-            <ts:attribute-type id="${func.name}" syntax="${getSyntax(func.outputs)}">
-                <ts:name>
-                    <ts:string xml:lang="en">${func.name}</ts:string>
-                </ts:name>
-                <ts:origins>
-                    <ts:ethereum function="${func.name}" contract="${contractName}" as="${getAS(func.outputs)}">
-                        ${data}
-                    </ts:ethereum>
-                </ts:origins>
-            </ts:attribute-type>`
+        let attributeTypeNode = document.createElement("ts:attribute-type");
+        attributeTypeNode.setAttribute("id", func.name);
+        attributeTypeNode.setAttribute("syntax", getSyntax(func.outputs));
+        attributeTypeNode.innerHTML = `
+            <ts:name>
+                <ts:string xml:lang="en">${func.name}</ts:string>
+            </ts:name>
+            <ts:origins>
+                <ts:ethereum function="${func.name}" contract="${contractName}" as="${getAS(func.outputs)}">
+                    ${data}
+                </ts:ethereum>
+            </ts:origins>`;
+        return attributeTypeNode;
+    }
+
+    function getEvent(eventName, contractName, contractAddress, eventABI) {
+        let eventParams = getEventParams(eventABI);
+        let eventTypeNode = document.createElement("ts:contract");
+        eventTypeNode.setAttribute("name", contractName);
+        eventTypeNode.innerHTML = `
+                <ts:address network="1">${contractAddress}</ts:address>
+                <asnx:module name="${eventName}">
+                  <sequence>
+                    ${eventParams}
+                  </sequence>
+                </asnx:module>`;
+        return eventTypeNode;
     }
 
     function getData(func) {
@@ -122,10 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
         for(let input of func.inputs) {
             data += `<ts:${input.type}></ts:${input.type}>`
         }
-        if(data !== "") {
-            data = dataPrefix + data + dataSuffix;
-        }
-        return data;
+        return dataPrefix + data + dataSuffix;
     }
 
     function getAS(outputs) {
