@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE token  [
+        <!ENTITY style SYSTEM "shared.css">
+        <!ENTITY about.en SYSTEM "about.en.js">
+        <!ENTITY approve.en SYSTEM "approve.en.js">
+        ]>
+<ts:token xmlns:ts="http://tokenscript.org/2020/03/tokenscript"
+          xmlns:xhtml="http://www.w3.org/1999/xhtml"
+          xmlns:xml="http://www.w3.org/XML/1998/namespace"
+          xsi:schemaLocation="http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          custodian="false"
+>
+    <ts:name>
+        <ts:string xml:lang="en"></ts:string>
+    </ts:name>
+    <ts:contract interface="erc20" name=>
+        <ts:address network="1"></ts:address>     <!--mainnet-->
+    </ts:contract>
+
+    <ts:origins>
+        <!-- Define the contract which holds the token that the user will use -->
+        <ts:ethereum contract=> <!-- as above ts:contract name -->
+        </ts:ethereum>
+    </ts:origins>
+
+    <ts:cards>
+        <ts:action>
+            <ts:name>
+                <ts:string xml:lang="en">About</ts:string>
+            </ts:name>
+            <ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+                <style type="text/css">&style;</style>
+                <xhtml:script type="text/javascript">&about.en;</xhtml:script>
+            </ts:view>
+        </ts:action>
+
+        <ts:action>
+            <ts:name>
+                <ts:string xml:lang="en">Approve</ts:string>
+            </ts:name>
+            <ts:attribute-type id="approvalAddress" syntax="1.3.6.1.4.1.1466.115.121.1.36">
+                <ts:name>
+                    <ts:string xml:lang="en">Approval Address</ts:string>
+                </ts:name>
+                <ts:origins>
+                    <ts:user-entry as="address"/>
+                </ts:origins>
+            </ts:attribute-type>
+            <ts:transaction>
+                <ts:ethereum function="approve" contract= as="uint">
+                    <ts:data>
+                        <ts:address ref="approvalAddress"/>
+                        <ts:uint256>115792089237316195423570985008687907853269984665640564039457584007913129639935</ts:uint256>
+                    </ts:data>
+                </ts:ethereum>
+            </ts:transaction>
+            <ts:view xml:lang="en">
+                <xhtml:style type="text/css">&style;</xhtml:style>
+                <xhtml:script type="text/javascript">&approve.en;</xhtml:script>
+            </ts:view>
+        </ts:action>
+    </ts:cards>
+    <ts:attribute-types>
+        <!-- placeholder for future functions -->
+        <ts:attribute-type id="symbol" syntax="1.3.6.1.4.1.1466.115.121.1.26">
+            <ts:origins>
+                <ts:ethereum as="utf8" function="symbol">
+                </ts:ethereum>
+            </ts:origins>
+        </ts:attribute-type>
+    </ts:attribute-types>
+</ts:token>

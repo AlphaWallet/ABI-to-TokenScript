@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const templates = require("./templates");
-    const testABI = templates.exampleABI;
-
     let domParser = new DOMParser();
 
     document.getElementById("create").addEventListener("click", function () {
@@ -61,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
-        let xmlAsString = new XMLSerializer().serializeToString(updatedXML);
-        download("TokenScript.xml", xmlAsString);
+        let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace("xhtml:", "");
+        download(contractName + "-TokenScript.xml", xmlAsString);
     }
 
     //TODO pass by ref rather than value
@@ -77,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return xmlFile;
     }
 
+    //TODO set contract name for template approve function action
     function setContractDetails(xmlFile, contractName, contractAddress) {
         xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
