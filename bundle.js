@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function getEventParams(eventAbi) {
         let eventParams = "";
         for(let eventInput of eventAbi.inputs) {
-            eventParams += `<element name=${eventInput.name} ethereum:type=${eventInput.type} ethereum:indexed=${eventInput.indexed}/>\n`;
+            eventParams += `<element name=${eventInput.name} ethereum:type=${eventInput.type} ethereum:indexed=${eventInput.indexed}>`;
         }
         return eventParams;
     }
