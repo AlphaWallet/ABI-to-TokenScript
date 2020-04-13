@@ -7,5 +7,7 @@
     "build": "browserify index.js > bundle.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+  }
 }

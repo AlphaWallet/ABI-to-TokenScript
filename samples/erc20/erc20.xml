@@ -14,13 +14,13 @@
     <ts:name>
         <ts:string xml:lang="en"></ts:string>
     </ts:name>
-    <ts:contract interface="erc20" name=>
+    <ts:contract interface="erc20" name="">
         <ts:address network="1"></ts:address>     <!--mainnet-->
     </ts:contract>
 
     <ts:origins>
         <!-- Define the contract which holds the token that the user will use -->
-        <ts:ethereum contract=> <!-- as above ts:contract name -->
+        <ts:ethereum contract=""> <!-- as above ts:contract name -->
         </ts:ethereum>
     </ts:origins>
 
@@ -48,7 +48,7 @@
                 </ts:origins>
             </ts:attribute-type>
             <ts:transaction>
-                <ts:ethereum function="approve" contract= as="uint">
+                <ts:ethereum function="approve" contract="" as="uint">
                     <ts:data>
                         <ts:address ref="approvalAddress"/>
                         <ts:uint256>115792089237316195423570985008687907853269984665640564039457584007913129639935</ts:uint256>

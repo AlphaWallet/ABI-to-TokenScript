@@ -12,9 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const templates = require("./templates");
-    let domParser = new DOMParser();
 
-    document.getElementById("create").addEventListener("click", function () {
+    document.getElementById("create").addEventListener("click", () => {
         let contractName = document.getElementById("contractName").value;
         let contractAddress = document.getElementById("contractAddress").value;
         let ABI = JSON.parse(document.getElementById("contractABI").value);
@@ -28,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function start(erc, abi, contractAddress, contractName) {
+        let domParser = new DOMParser();
         let xmlFile;
         switch(erc) {
             case ERC.ERC20:
@@ -38,10 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 break;
         }
         xmlFile = setContractDetails(xmlFile, contractName, contractAddress);
-        setValuesFromABI(abi, xmlFile, contractAddress, contractName);
+        setValuesFromABI(erc, abi, xmlFile, contractAddress, contractName);
     }
 
-    function setValuesFromABI(abi, xmlFile, contractAddress, contractName) {
+    function setValuesFromABI(erc, abi, xmlFile, contractAddress, contractName) {
         let attributesToAdd = [];
         let eventsToAdd = [];
         for(let func of abi) {
@@ -59,8 +59,36 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
-        let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace("xhtml:", "");
-        download(contractName + "-TokenScript.xml", xmlAsString);
+        let xmlAsString = new XMLSerializer().serializeToString(updatedXML);
+        downloadFilesAsZip(erc, contractName, xmlAsString);
+    }
+
+    function downloadFilesAsZip(erc, contractName, xmlAsString) {
+        let zip = new JSZip();
+        let folder = zip.folder(contractName);
+        folder.file(contractName + "-TokenScript.xml", xmlAsString, null);
+        //CSS is the same for 721 and 20 but the user needs the paths to match in the entities
+        let cssPromise = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/shared.css");
+        folder.file("shared.css", cssPromise, null);
+        let makeFilePromise = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/Makefile");
+        folder.file("Makefile", makeFilePromise, null);
+        switch(erc) {
+            case ERC.ERC20:
+                let aboutPromise20 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/about.en.js");
+                folder.file("about.en.js", aboutPromise20, null);
+                let approvePromise20 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/approve.en.js");
+                folder.file("approve.en.js", approvePromise20, null);
+                break;
+            case ERC.ERC721:
+                let aboutPromise721 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc721/about.en.js");
+                folder.file("about.en.js", aboutPromise721, null);
+                let approvePromise721 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc721/approve.en.js");
+                folder.file("approve.en.js", approvePromise721, null);
+                break;
+        }
+        zip.generateAsync({ type: "blob" }).then((content) => {
+            saveAs(content, contractName + ".zip");
+        });
     }
 
     //TODO pass by ref rather than value
@@ -75,11 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return xmlFile;
     }
 
-    //TODO set contract name for template approve function action
     function setContractDetails(xmlFile, contractName, contractAddress) {
         xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
+        xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
+            .getElementsByTagName("ts:transaction")[0].
+        getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
         return xmlFile;
     }
 
@@ -131,13 +161,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getData(func) {
-        let data = "";
-        let dataPrefix = "<ts:data>";
-        let dataSuffix = "</ts:data>";
-        for(let input of func.inputs) {
-            data += `<ts:${input.type}></ts:${input.type}>`
+        let dataElement = document.createElement("ts:data");
+        if(func.inputs.length !== 0) {
+            for(let input of func.inputs) {
+                let paramNode = document.createTextNode(`ts:${input.type}`);
+                dataElement.appendChild(paramNode);
+            }
+            return dataElement;
+        } else {
+            return "";
         }
-        return dataPrefix + data + dataSuffix;
     }
 
     function getAS(outputs) {
@@ -161,16 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             return "void";
         }
-    }
-
-    function download(filename, text) {
-        let element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
     }
 
 });

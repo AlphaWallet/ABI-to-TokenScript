@@ -13,9 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const templates = require("./templates");
-    let domParser = new DOMParser();
 
-    document.getElementById("create").addEventListener("click", function () {
+    document.getElementById("create").addEventListener("click", () => {
         let contractName = document.getElementById("contractName").value;
         let contractAddress = document.getElementById("contractAddress").value;
         let ABI = JSON.parse(document.getElementById("contractABI").value);
@@ -29,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function start(erc, abi, contractAddress, contractName) {
+        let domParser = new DOMParser();
         let xmlFile;
         switch(erc) {
             case ERC.ERC20:
@@ -39,10 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 break;
         }
         xmlFile = setContractDetails(xmlFile, contractName, contractAddress);
-        setValuesFromABI(abi, xmlFile, contractAddress, contractName);
+        setValuesFromABI(erc, abi, xmlFile, contractAddress, contractName);
     }
 
-    function setValuesFromABI(abi, xmlFile, contractAddress, contractName) {
+    function setValuesFromABI(erc, abi, xmlFile, contractAddress, contractName) {
         let attributesToAdd = [];
         let eventsToAdd = [];
         for(let func of abi) {
@@ -60,8 +60,36 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
-        let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace("xhtml:", "");
-        download(contractName + "-TokenScript.xml", xmlAsString);
+        let xmlAsString = new XMLSerializer().serializeToString(updatedXML);
+        downloadFilesAsZip(erc, contractName, xmlAsString);
+    }
+
+    function downloadFilesAsZip(erc, contractName, xmlAsString) {
+        let zip = new JSZip();
+        let folder = zip.folder(contractName);
+        folder.file(contractName + "-TokenScript.xml", xmlAsString, null);
+        //CSS is the same for 721 and 20 but the user needs the paths to match in the entities
+        let cssPromise = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/shared.css");
+        folder.file("shared.css", cssPromise, null);
+        let makeFilePromise = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/Makefile");
+        folder.file("Makefile", makeFilePromise, null);
+        switch(erc) {
+            case ERC.ERC20:
+                let aboutPromise20 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/about.en.js");
+                folder.file("about.en.js", aboutPromise20, null);
+                let approvePromise20 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/approve.en.js");
+                folder.file("approve.en.js", approvePromise20, null);
+                break;
+            case ERC.ERC721:
+                let aboutPromise721 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc721/about.en.js");
+                folder.file("about.en.js", aboutPromise721, null);
+                let approvePromise721 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc721/approve.en.js");
+                folder.file("approve.en.js", approvePromise721, null);
+                break;
+        }
+        zip.generateAsync({ type: "blob" }).then((content) => {
+            saveAs(content, contractName + ".zip");
+        });
     }
 
     //TODO pass by ref rather than value
@@ -76,11 +104,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return xmlFile;
     }
 
-    //TODO set contract name for template approve function action
     function setContractDetails(xmlFile, contractName, contractAddress) {
         xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
+        xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
+            .getElementsByTagName("ts:transaction")[0].
+        getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
         return xmlFile;
     }
 
@@ -132,13 +162,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getData(func) {
-        let data = "";
-        let dataPrefix = "<ts:data>";
-        let dataSuffix = "</ts:data>";
-        for(let input of func.inputs) {
-            data += `<ts:${input.type}></ts:${input.type}>`
+        let dataElement = document.createElement("ts:data");
+        if(func.inputs.length !== 0) {
+            for(let input of func.inputs) {
+                let paramNode = document.createTextNode(`ts:${input.type}`);
+                dataElement.appendChild(paramNode);
+            }
+            return dataElement;
+        } else {
+            return "";
         }
-        return dataPrefix + data + dataSuffix;
     }
 
     function getAS(outputs) {
@@ -164,22 +197,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function download(filename, text) {
-        let element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    }
-
 });
 
 },{"./templates":2}],2:[function(require,module,exports){
 module.exports = {
     erc20XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-        "<!DOCTYPE token  []>\n" +
+        "<!DOCTYPE token  [\n" +
+        "        <!ENTITY style SYSTEM \"shared.css\">\n" +
+        "        <!ENTITY about.en SYSTEM \"about.en.js\">\n" +
+        "        <!ENTITY approve.en SYSTEM \"approve.en.js\">\n" +
+        "        ]>\n" +
         "<ts:token xmlns:ts=\"http://tokenscript.org/2020/03/tokenscript\"\n" +
         "          xmlns:xhtml=\"http://www.w3.org/1999/xhtml\"\n" +
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
@@ -201,42 +228,125 @@ module.exports = {
         "    </ts:origins>\n" +
         "\n" +
         "    <ts:cards>\n" +
+        "        <ts:action>\n" +
+        "            <ts:name>\n" +
+        "                <ts:string xml:lang=\"en\">About</ts:string>\n" +
+        "            </ts:name>\n" +
+        "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
+        "                <style type=\"text/css\">&style;</style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
+        "            </ts:view>\n" +
+        "        </ts:action>\n" +
+        "\n" +
+        "        <ts:action>\n" +
+        "            <ts:name>\n" +
+        "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
+        "            </ts:name>\n" +
+        "            <ts:attribute-type id=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
+        "                <ts:name>\n" +
+        "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
+        "                </ts:name>\n" +
+        "                <ts:origins>\n" +
+        "                    <ts:user-entry as=\"address\"/>\n" +
+        "                </ts:origins>\n" +
+        "            </ts:attribute-type>\n" +
+        "            <ts:transaction>\n" +
+        "                <ts:ethereum function=\"approve\" contract=\"\" as=\"uint\">\n" +
+        "                    <ts:data>\n" +
+        "                        <ts:address ref=\"approvalAddress\"/>\n" +
+        "                        <ts:uint256>115792089237316195423570985008687907853269984665640564039457584007913129639935</ts:uint256>\n" +
+        "                    </ts:data>\n" +
+        "                </ts:ethereum>\n" +
+        "            </ts:transaction>\n" +
+        "            <ts:view xml:lang=\"en\">\n" +
+        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
+        "            </ts:view>\n" +
+        "        </ts:action>\n" +
         "    </ts:cards>\n" +
         "    <ts:attribute-types>\n" +
+        "        <!-- placeholder for future functions -->\n" +
+        "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
+        "            <ts:origins>\n" +
+        "                <ts:ethereum as=\"utf8\" function=\"symbol\">\n" +
+        "                </ts:ethereum>\n" +
+        "            </ts:origins>\n" +
+        "        </ts:attribute-type>\n" +
         "    </ts:attribute-types>\n" +
         "</ts:token>\n",
 
-    erc721XML: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-        "<!DOCTYPE token  []>\n" +
+    erc721XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        "<!DOCTYPE token  [\n" +
+        "        <!ENTITY style SYSTEM \"shared.css\">\n" +
+        "        <!ENTITY about.en SYSTEM \"about.en.js\">\n" +
+        "        <!ENTITY approve.en SYSTEM \"approve.en.js\">\n" +
+        "        ]>\n" +
         "<ts:token xmlns:ts=\"http://tokenscript.org/2020/03/tokenscript\"\n" +
         "          xmlns:xhtml=\"http://www.w3.org/1999/xhtml\"\n" +
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
         "          xsi:schemaLocation=\"http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd\"\n" +
         "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-        "          xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"\n" +
-        "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
         "          custodian=\"false\"\n" +
         ">\n" +
         "    <ts:name>\n" +
-        "        <ts:plurals xml:lang=\"en\">\n" +
-        "            <ts:string quantity=\"one\"></ts:string>\n" +
-        "        </ts:plurals>\n" +
+        "        <ts:string xml:lang=\"en\"></ts:string>\n" +
         "    </ts:name>\n" +
         "    <ts:contract interface=\"erc721\" name=\"\">\n" +
-        "        <ts:address network=\"1\"></ts:address>\n" +
+        "        <ts:address network=\"1\"></ts:address>     <!--mainnet-->\n" +
         "    </ts:contract>\n" +
+        "\n" +
         "    <ts:origins>\n" +
         "        <!-- Define the contract which holds the token that the user will use -->\n" +
-        "        <ts:ethereum contract=\"TimeToken\">\n" +
+        "        <ts:ethereum contract=\"\"> <!-- as above ts:contract name -->\n" +
         "        </ts:ethereum>\n" +
         "    </ts:origins>\n" +
         "\n" +
         "    <ts:cards>\n" +
+        "        <ts:action>\n" +
+        "            <ts:name>\n" +
+        "                <ts:string xml:lang=\"en\">About</ts:string>\n" +
+        "            </ts:name>\n" +
+        "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
+        "                <style type=\"text/css\">&style;</style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
+        "            </ts:view>\n" +
+        "        </ts:action>\n" +
+        "\n" +
+        "        <ts:action>\n" +
+        "            <ts:name>\n" +
+        "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
+        "            </ts:name>\n" +
+        "            <ts:attribute-type id=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
+        "                <ts:name>\n" +
+        "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
+        "                </ts:name>\n" +
+        "                <ts:origins>\n" +
+        "                    <ts:user-entry as=\"address\"/>\n" +
+        "                </ts:origins>\n" +
+        "            </ts:attribute-type>\n" +
+        "            <ts:transaction>\n" +
+        "                <ts:ethereum function=\"approve\" contract=\"\" as=\"uint\">\n" +
+        "                    <ts:data>\n" +
+        "                        <ts:address ref=\"approvalAddress\"/>\n" +
+        "                        <ts:uint256 ref=\"tokenId\"/>\n" +
+        "                    </ts:data>\n" +
+        "                </ts:ethereum>\n" +
+        "            </ts:transaction>\n" +
+        "            <ts:view xml:lang=\"en\">\n" +
+        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
+        "            </ts:view>\n" +
+        "        </ts:action>\n" +
         "    </ts:cards>\n" +
-        "\n" +
         "    <ts:attribute-types>\n" +
+        "        <!-- placeholder for future functions -->\n" +
+        "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
+        "            <ts:origins>\n" +
+        "                <ts:ethereum as=\"utf8\" function=\"symbol\">\n" +
+        "                </ts:ethereum>\n" +
+        "            </ts:origins>\n" +
+        "        </ts:attribute-type>\n" +
         "    </ts:attribute-types>\n" +
-        "\n" +
         "</ts:token>\n",
 
     exampleABI: [
