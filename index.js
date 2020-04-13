@@ -59,7 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
-        let xmlAsString = new XMLSerializer().serializeToString(updatedXML);
+        //TODO fix xhtml problem properly rather than replace
+        let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace(/xhtml:/g,"") ;
         downloadFilesAsZip(erc, contractName, vkbeautify.xml(xmlAsString));
     }
 
