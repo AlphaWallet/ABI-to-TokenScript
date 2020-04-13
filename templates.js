@@ -10,6 +10,8 @@ module.exports = {
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
         "          xsi:schemaLocation=\"http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd\"\n" +
         "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+        "          xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"\n" +
+        "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
         "          custodian=\"false\"\n" +
         ">\n" +
         "    <ts:name>\n" +
@@ -84,6 +86,8 @@ module.exports = {
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
         "          xsi:schemaLocation=\"http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd\"\n" +
         "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+        "          xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"\n" +
+        "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
         "          custodian=\"false\"\n" +
         ">\n" +
         "    <ts:name>\n" +
