@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
         let xmlAsString = new XMLSerializer().serializeToString(updatedXML);
-        downloadFilesAsZip(erc, contractName, xmlAsString);
+        downloadFilesAsZip(erc, contractName, vkbeautify.xml(xmlAsString));
     }
 
     function downloadFilesAsZip(erc, contractName, xmlAsString) {
