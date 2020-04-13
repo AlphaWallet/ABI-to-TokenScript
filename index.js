@@ -106,6 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function setContractDetails(xmlFile, contractName, contractAddress) {
         xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
+        xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].innerHTML = contractAddress;
+        xmlFile.getElementsByTagName("ts:origins")[0].getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
         xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
         xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]

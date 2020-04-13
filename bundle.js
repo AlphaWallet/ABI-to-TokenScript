@@ -107,6 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function setContractDetails(xmlFile, contractName, contractAddress) {
         xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
+        xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].innerHTML = contractAddress;
+        xmlFile.getElementsByTagName("ts:origins")[0].getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
         xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
         xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
@@ -213,6 +215,8 @@ module.exports = {
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
         "          xsi:schemaLocation=\"http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd\"\n" +
         "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+        "          xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"\n" +
+        "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
         "          custodian=\"false\"\n" +
         ">\n" +
         "    <ts:name>\n" +
@@ -287,6 +291,8 @@ module.exports = {
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
         "          xsi:schemaLocation=\"http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd\"\n" +
         "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+        "          xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"\n" +
+        "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
         "          custodian=\"false\"\n" +
         ">\n" +
         "    <ts:name>\n" +
