@@ -64,7 +64,6 @@ module.exports = {
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +
-        "    <ts:attribute-types>\n" +
         "        <!-- placeholder for future functions -->\n" +
         "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
         "            <ts:origins>\n" +
@@ -72,7 +71,6 @@ module.exports = {
         "                </ts:ethereum>\n" +
         "            </ts:origins>\n" +
         "        </ts:attribute-type>\n" +
-        "    </ts:attribute-types>\n" +
         "</ts:token>\n",
 
     erc721XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -140,7 +138,6 @@ module.exports = {
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +
-        "    <ts:attribute-types>\n" +
         "        <!-- placeholder for future functions -->\n" +
         "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
         "            <ts:origins>\n" +
@@ -148,7 +145,6 @@ module.exports = {
         "                </ts:ethereum>\n" +
         "            </ts:origins>\n" +
         "        </ts:attribute-type>\n" +
-        "    </ts:attribute-types>\n" +
         "</ts:token>\n",
 
     exampleABI: [

@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function appendToTS(attributes, events, xmlFile) {
         let child = xmlFile.getElementsByTagName("ts:contract")[0];
         for(let attribute of attributes) {
-            xmlFile.getElementsByTagName("ts:attribute-types")[0].appendChild(attribute);
+            xmlFile.getElementsByTagName("ts:token")[0].appendChild(attribute);
         }
         for(let event of events) {
             xmlFile.getElementsByTagName("ts:token")[0].insertBefore(event, child);
@@ -269,7 +269,6 @@ module.exports = {
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +
-        "    <ts:attribute-types>\n" +
         "        <!-- placeholder for future functions -->\n" +
         "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
         "            <ts:origins>\n" +
@@ -277,7 +276,6 @@ module.exports = {
         "                </ts:ethereum>\n" +
         "            </ts:origins>\n" +
         "        </ts:attribute-type>\n" +
-        "    </ts:attribute-types>\n" +
         "</ts:token>\n",
 
     erc721XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -345,7 +343,6 @@ module.exports = {
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +
-        "    <ts:attribute-types>\n" +
         "        <!-- placeholder for future functions -->\n" +
         "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
         "            <ts:origins>\n" +
@@ -353,7 +350,6 @@ module.exports = {
         "                </ts:ethereum>\n" +
         "            </ts:origins>\n" +
         "        </ts:attribute-type>\n" +
-        "    </ts:attribute-types>\n" +
         "</ts:token>\n",
 
     exampleABI: [

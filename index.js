@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function appendToTS(attributes, events, xmlFile) {
         let child = xmlFile.getElementsByTagName("ts:contract")[0];
         for(let attribute of attributes) {
-            xmlFile.getElementsByTagName("ts:attribute-types")[0].appendChild(attribute);
+            xmlFile.getElementsByTagName("ts:token")[0].appendChild(attribute);
         }
         for(let event of events) {
             xmlFile.getElementsByTagName("ts:token")[0].insertBefore(event, child);
