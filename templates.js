@@ -34,7 +34,7 @@ module.exports = {
         "            </ts:name>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
         "                <style type=\"text/css\">&style;</style>\n" +
-        "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
+        "                <script type=\"text/javascript\">&about.en;</script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "\n" +
@@ -59,8 +59,8 @@ module.exports = {
         "                </ts:ethereum>\n" +
         "            </ts:transaction>\n" +
         "            <ts:view xml:lang=\"en\">\n" +
-        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
-        "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
+        "                <style type=\"text/css\">&style;</style>\n" +
+        "                <script type=\"text/javascript\">&approve.en;</script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +
@@ -108,7 +108,7 @@ module.exports = {
         "            </ts:name>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
         "                <style type=\"text/css\">&style;</style>\n" +
-        "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
+        "                <script type=\"text/javascript\">&about.en;</script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "\n" +
@@ -133,8 +133,8 @@ module.exports = {
         "                </ts:ethereum>\n" +
         "            </ts:transaction>\n" +
         "            <ts:view xml:lang=\"en\">\n" +
-        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
-        "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
+        "                <style type=\"text/css\">&style;</style>\n" +
+        "                <script type=\"text/javascript\">&approve.en;</script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +

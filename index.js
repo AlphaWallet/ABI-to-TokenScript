@@ -117,9 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getEventParams(eventAbi) {
-        let eventParams = "";
+        let eventParams = [];
         for(let eventInput of eventAbi.inputs) {
-            eventParams += `<element name=${eventInput.name} ethereum:type=${eventInput.type} ethereum:indexed=${eventInput.indexed}>`;
+            let elementNode = document.createElement("element");
+            elementNode.setAttribute("name", eventInput.name);
+            elementNode.setAttribute("ethereum:type", eventInput.type);
+            elementNode.setAttribute("ethereum:indexed", eventInput.indexed);
+            eventParams.push(elementNode);
         }
         return eventParams;
     }
@@ -137,15 +141,20 @@ document.addEventListener("DOMContentLoaded", () => {
         let attributeTypeNode = document.createElement("ts:attribute-type");
         attributeTypeNode.setAttribute("id", func.name);
         attributeTypeNode.setAttribute("syntax", getSyntax(func.outputs));
-        attributeTypeNode.innerHTML = `
-            <ts:name>
-                <ts:string xml:lang="en">${func.name}</ts:string>
-            </ts:name>
-            <ts:origins>
-                <ts:ethereum function="${func.name}" contract="${contractName}" as="${getAS(func.outputs)}">
-                    ${data}
-                </ts:ethereum>
-            </ts:origins>`;
+        let nameNode = document.createElement("ts:name");
+        let stringNodeName = document.createElement("ts:string");
+        stringNodeName.setAttribute("xml:lang", "en");
+        stringNodeName.innerText = func.name;
+        nameNode.appendChild(stringNodeName);
+        attributeTypeNode.appendChild(nameNode);
+        let originNode = document.createElement("ts:origins");
+        let ethereumNode = document.createElement("ts:ethereum");
+        ethereumNode.setAttribute("function", func.name);
+        ethereumNode.setAttribute("contract", contractName);
+        ethereumNode.setAttribute("as", getAS(func.outputs));
+        ethereumNode.innerText = data;
+        originNode.appendChild(ethereumNode);
+        attributeTypeNode.appendChild(originNode);
         return attributeTypeNode;
     }
 
@@ -153,13 +162,18 @@ document.addEventListener("DOMContentLoaded", () => {
         let eventParams = getEventParams(eventABI);
         let eventTypeNode = document.createElement("ts:contract");
         eventTypeNode.setAttribute("name", contractName);
-        eventTypeNode.innerHTML = `
-                <ts:address network="1">${contractAddress}</ts:address>
-                <asnx:module name="${eventName}">
-                  <sequence>
-                    ${eventParams}
-                  </sequence>
-                </asnx:module>`;
+        let addressNode = document.createElement("ts:address");
+        addressNode.setAttribute("network", "1");
+        addressNode.innerText = contractAddress;
+        let moduleNode = document.createElement("asnx:module");
+        moduleNode.setAttribute("name", eventName);
+        let sequenceNode = document.createElement("sequence");
+        eventParams.map((eventParam) => {
+            sequenceNode.appendChild(eventParam);
+        });
+        moduleNode.appendChild(sequenceNode);
+        eventTypeNode.appendChild(addressNode);
+        eventTypeNode.appendChild(moduleNode);
         return eventTypeNode;
     }
 
@@ -176,11 +190,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    //TODO make into a comprehensive switch statement with enum
     function getAS(outputs) {
         if(outputs === []) {
             return "void";
         } else {
-            return outputs[0].type;
+            let ethType = outputs[0].type;
+            if(ethType.includes("uint")) {
+                return "uint";
+            } else if(ethType.includes("byte")) {
+                return "bytes";
+            } else if(ethType.includes("string")) {
+                return "utf8";
+            } else if(ethType.includes("address")) {
+                return "address";
+            }
         }
     }
 
