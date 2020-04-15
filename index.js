@@ -16,15 +16,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("create").addEventListener("click", () => {
         let contractName = document.getElementById("contractName").value;
         let contractAddress = document.getElementById("contractAddress").value;
-        let ABI = JSON.parse(document.getElementById("contractABI").value);
+        let abi = getABI(document.getElementById("contractABI").value);
         let erc20Checked = document.getElementById("erc20").checked;
         if(erc20Checked) {
-            start(ERC.ERC20, ABI, contractAddress, contractName);
+            start(ERC.ERC20, abi, contractAddress, contractName);
         } else {
-            start(ERC.ERC721, ABI, contractAddress, contractName);
+            start(ERC.ERC721, abi, contractAddress, contractName);
         }
     });
 
+    function getABI(abi) {
+        try {
+            return JSON.parse(abi);
+        } catch {
+            //abi left empty, proceed but just give the default template
+            return undefined;
+        }
+    }
 
     function start(erc, abi, contractAddress, contractName) {
         let domParser = new DOMParser();
@@ -38,7 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 break;
         }
         xmlFile = setContractDetails(xmlFile, contractName, contractAddress);
-        setValuesFromABI(erc, abi, xmlFile, contractAddress, contractName);
+        if(abi === undefined) {
+            setValuesWithoutABI(erc, xmlFile, contractAddress, contractName);
+        } else {
+            setValuesFromABI(erc, abi, xmlFile, contractAddress, contractName);
+        }
     }
 
     function setValuesFromABI(erc, abi, xmlFile, contractAddress, contractName) {
@@ -61,6 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
         //TODO fix xhtml problem properly rather than replace
         let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace(/xhtml:/g,"") ;
+        downloadFilesAsZip(erc, contractName, vkbeautify.xml(xmlAsString));
+    }
+
+    function setValuesWithoutABI(erc, xmlFile, contractAddress, contractName) {
+        //TODO fix xhtml problem properly rather than replace
+        let xmlAsString = new XMLSerializer().serializeToString(xmlFile).replace(/xhtml:/g,"") ;
         downloadFilesAsZip(erc, contractName, vkbeautify.xml(xmlAsString));
     }
 
