@@ -1,4 +1,13 @@
 module.exports = {
+
+    header: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n",
+
+    entities: "<!DOCTYPE token  [\n" +
+        "        <!ENTITY style SYSTEM \"shared.css\">\n" +
+        "        <!ENTITY about.en SYSTEM \"about.en.js\">\n" +
+        "        <!ENTITY approve.en SYSTEM \"approve.en.js\">\n" +
+        "        ]>\n",
+
     erc20XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
         "<!DOCTYPE token  [\n" +
         "        <!ENTITY style SYSTEM \"shared.css\">\n" +
@@ -33,8 +42,8 @@ module.exports = {
         "                <ts:string xml:lang=\"en\">About</ts:string>\n" +
         "            </ts:name>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
-        "                <style type=\"text/css\">&style;</style>\n" +
-        "                <script type=\"text/javascript\">&about.en;</script>\n" +
+        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "\n" +
@@ -58,19 +67,19 @@ module.exports = {
         "                    </ts:data>\n" +
         "                </ts:ethereum>\n" +
         "            </ts:transaction>\n" +
-        "            <ts:view xml:lang=\"en\">\n" +
-        "                <style type=\"text/css\">&style;</style>\n" +
-        "                <script type=\"text/javascript\">&approve.en;</script>\n" +
+        "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
+        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +
-        "        <!-- placeholder for future functions -->\n" +
-        "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
-        "            <ts:origins>\n" +
-        "                <ts:ethereum as=\"utf8\" function=\"symbol\">\n" +
-        "                </ts:ethereum>\n" +
-        "            </ts:origins>\n" +
-        "        </ts:attribute-type>\n" +
+        "    <!-- placeholder for future functions -->\n" +
+        "    <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
+        "        <ts:origins>\n" +
+        "            <ts:ethereum as=\"utf8\" function=\"symbol\">\n" +
+        "            </ts:ethereum>\n" +
+        "        </ts:origins>\n" +
+        "    </ts:attribute-type>\n" +
         "</ts:token>\n",
 
     erc721XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -107,8 +116,8 @@ module.exports = {
         "                <ts:string xml:lang=\"en\">About</ts:string>\n" +
         "            </ts:name>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
-        "                <style type=\"text/css\">&style;</style>\n" +
-        "                <script type=\"text/javascript\">&about.en;</script>\n" +
+        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "\n" +
@@ -132,19 +141,19 @@ module.exports = {
         "                    </ts:data>\n" +
         "                </ts:ethereum>\n" +
         "            </ts:transaction>\n" +
-        "            <ts:view xml:lang=\"en\">\n" +
-        "                <style type=\"text/css\">&style;</style>\n" +
-        "                <script type=\"text/javascript\">&approve.en;</script>\n" +
+        "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
+        "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
+        "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
         "        </ts:action>\n" +
         "    </ts:cards>\n" +
-        "        <!-- placeholder for future functions -->\n" +
-        "        <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
-        "            <ts:origins>\n" +
-        "                <ts:ethereum as=\"utf8\" function=\"symbol\">\n" +
-        "                </ts:ethereum>\n" +
-        "            </ts:origins>\n" +
-        "        </ts:attribute-type>\n" +
+        "    <!-- placeholder for future functions -->\n" +
+        "    <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
+        "        <ts:origins>\n" +
+        "            <ts:ethereum as=\"utf8\" function=\"symbol\">\n" +
+        "            </ts:ethereum>\n" +
+        "        </ts:origins>\n" +
+        "    </ts:attribute-type>\n" +
         "</ts:token>\n",
 
     exampleABI: [

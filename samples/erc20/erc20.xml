@@ -32,8 +32,8 @@
                 <ts:string xml:lang="en">About</ts:string>
             </ts:name>
             <ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-                <style type="text/css">&style;</style>
-                <script type="text/javascript">&about.en;</script>
+                <xhtml:style type="text/css">&style;</xhtml:style>
+                <xhtml:script type="text/javascript">&about.en;</xhtml:script>
             </ts:view>
         </ts:action>
 
@@ -57,9 +57,9 @@
                     </ts:data>
                 </ts:ethereum>
             </ts:transaction>
-            <ts:view xml:lang="en">
-                <style type="text/css">&style;</style>
-                <script type="text/javascript">&approve.en;</script>
+            <ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+                <xhtml:style type="text/css">&style;</xhtml:style>
+                <xhtml:script type="text/javascript">&approve.en;</xhtml:script>
             </ts:view>
         </ts:action>
     </ts:cards>

@@ -72,19 +72,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         let updatedXML = appendToTS(attributesToAdd, eventsToAdd, xmlFile);
         //TODO fix xhtml problem properly rather than replace
-        let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace(/xhtml:/g,"") ;
+        let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace(/xhtml:/g,"").replace(/amp;/g, "");
         downloadFilesAsZip(erc, contractName, vkbeautify.xml(xmlAsString));
     }
 
     function setValuesWithoutABI(erc, xmlFile, contractAddress, contractName) {
         //TODO fix xhtml problem properly rather than replace
-        let xmlAsString = new XMLSerializer().serializeToString(xmlFile).replace(/xhtml:/g,"") ;
+        let xmlAsString = new XMLSerializer().serializeToString(xmlFile).replace(/xhtml:/g,"").replace(/amp;/g, "");
         downloadFilesAsZip(erc, contractName, vkbeautify.xml(xmlAsString));
     }
 
     function downloadFilesAsZip(erc, contractName, xmlAsString) {
         let zip = new JSZip();
         let folder = zip.folder(contractName);
+        xmlAsString = appendMissingEntities(xmlAsString);
         folder.file(contractName + "-TokenScript.xml", xmlAsString, null);
         //CSS is the same for 721 and 20 but the user needs the paths to match in the entities
         let cssPromise = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/shared.css");
@@ -110,6 +111,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function appendMissingEntities(xmlString) {
+        let headerWithEntities = templates.header + templates.entities;
+        let xmlWithoutHeadersOrEntities = xmlString.replace("<!DOCTYPE token>", "").replace(templates.header, "");
+        return headerWithEntities + xmlWithoutHeadersOrEntities;
+    }
+
     //TODO pass by ref rather than value
     function appendToTS(attributes, events, xmlFile) {
         let child = xmlFile.getElementsByTagName("ts:contract")[0];
@@ -131,6 +138,20 @@ document.addEventListener("DOMContentLoaded", () => {
         xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
             .getElementsByTagName("ts:transaction")[0].
         getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
+
+        //set stripped entity tags
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[0]
+            .getElementsByTagName("ts:view")[0].getElementsByTagName("xhtml:style")[0].innerHTML = "&style;";
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0]
+            .getElementsByTagName("ts:action")[0].getElementsByTagName("ts:view")[0]
+            .getElementsByTagName("xhtml:script")[0].innerHTML = "&about.en;";
+
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
+            .getElementsByTagName("ts:view")[0].getElementsByTagName("xhtml:style")[0].innerHTML = "&style;";
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0]
+            .getElementsByTagName("ts:action")[1].getElementsByTagName("ts:view")[0]
+            .getElementsByTagName("xhtml:script")[0].innerHTML = "&approve.en;";
+
         return xmlFile;
     }
 
