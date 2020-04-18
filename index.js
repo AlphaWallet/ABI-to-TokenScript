@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ERC721: "erc721"
     };
 
+    let network = "1";
+
     const templates = require("./templates");
 
     document.getElementById("create").addEventListener("click", () => {
@@ -18,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let contractAddress = document.getElementById("contractAddress").value;
         let abi = getABI(document.getElementById("contractABI").value);
         let erc20Checked = document.getElementById("erc20").checked;
+        network = document.getElementById("network").value;
         if(erc20Checked) {
             start(ERC.ERC20, abi, contractAddress, contractName);
         } else {
@@ -34,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function start(erc, abi, contractAddress, contractName) {
+    function start(erc, abi, contractAddress, contractName, network) {
         let domParser = new DOMParser();
         let xmlFile;
         switch(erc) {
@@ -130,6 +133,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setContractDetails(xmlFile, contractName, contractAddress) {
+        //set network
+        xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].setAttribute("network", network);
+
         xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].innerHTML = contractAddress;
         xmlFile.getElementsByTagName("ts:origins")[0].getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
@@ -210,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //Can't set the contract name to be the same as the previously declared
         eventTypeNode.setAttribute("name", "contractWithEvent" + eventName);
         let addressNode = document.createElement("ts:address");
-        addressNode.setAttribute("network", "1");
+        addressNode.setAttribute("network", network);
         addressNode.innerText = contractAddress;
         let moduleNode = document.createElement("asnx:module");
         moduleNode.setAttribute("name", eventName);
