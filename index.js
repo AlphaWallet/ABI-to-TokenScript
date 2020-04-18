@@ -158,7 +158,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let data = getData(func);
         let attributeTypeNode = document.createElement("ts:attribute-type");
         attributeTypeNode.setAttribute("id", func.name);
-        attributeTypeNode.setAttribute("syntax", getSyntax(func.outputs));
+        let syntax = getSyntax(func.outputs);
+        if(syntax !== "") {
+            attributeTypeNode.setAttribute("syntax", syntax);
+        }
         let nameNode = document.createElement("ts:name");
         let stringNodeName = document.createElement("ts:string");
         stringNodeName.setAttribute("xml:lang", "en");
@@ -169,7 +172,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let ethereumNode = document.createElement("ts:ethereum");
         ethereumNode.setAttribute("function", func.name);
         ethereumNode.setAttribute("contract", contractName);
-        ethereumNode.setAttribute("as", getAS(func.outputs));
+        let AS = getAS(func.outputs);
+        if(AS !== "") {
+            ethereumNode.setAttribute("as", AS);
+        }
         ethereumNode.innerText = data;
         originNode.appendChild(ethereumNode);
         attributeTypeNode.appendChild(originNode);
@@ -211,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //TODO make into a comprehensive switch statement with enum
     function getAS(outputs) {
         if(outputs === []) {
-            return "void";
+            return "";
         } else {
             let ethType = outputs[0].type;
             if(ethType.includes("uint")) {
@@ -229,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //This requires guess work...
     function getSyntax(outputs) {
         if(outputs === []) {
-            return "void";
+            return "";
         } else if(outputs[0].type.includes("uint") || outputs[0].type.includes("int")) {
             return "1.3.6.1.4.1.1466.115.121.1.36";
         } else if(outputs[0].type.includes("string")) {
