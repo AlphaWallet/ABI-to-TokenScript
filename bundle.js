@@ -60,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
         for(let func of abi) {
             switch(func.type) {
                 case Types.FUNCTION:
-                    let attribute = parseFunctionToAttribute(func, contractAddress);
+                    let attribute = parseFunctionToAttribute(func, contractName);
                     if(attribute !== "") attributesToAdd.push(attribute);
                     break;
                 case Types.EVENT:
-                    let event = getEvent(func.name, contractName, contractAddress, func);
+                    let event = getEvent(func.name, contractAddress, func);
                     eventsToAdd.push(event);
                     break;
                 case Types.TUPLE:
@@ -204,10 +204,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return attributeTypeNode;
     }
 
-    function getEvent(eventName, contractName, contractAddress, eventABI) {
+    function getEvent(eventName, contractAddress, eventABI) {
         let eventParams = getEventParams(eventABI);
         let eventTypeNode = document.createElement("ts:contract");
-        eventTypeNode.setAttribute("name", contractName);
+        //Can't set the contract name to be the same as the previously declared
+        eventTypeNode.setAttribute("name", "contractWithEvent");
         let addressNode = document.createElement("ts:address");
         addressNode.setAttribute("network", "1");
         addressNode.innerText = contractAddress;
