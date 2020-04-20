@@ -25,10 +25,22 @@
     <label for="contractName"></label><input id="contractName" class="form-control" type="text" placeholder="your smart contract name">
     <br>
     <br>
+    <h3>Contract Interface</h3>
     <input type="radio" id="erc20" name="erc" value="erc20" checked="checked">
     <label for="erc20">erc20</label><br>
     <input type="radio" id="erc721" name="erc" value="erc721">
     <label for="erc721">erc721</label><br>
+    <br>
+    <h3>Network</h3>
+    <label for="network"></label>
+    <select id="network">
+        <option value="1" selected="selected">Mainnet</option>
+        <option value="100">xDAI</option>
+        <option value="3">Ropsten</option>
+        <option value="4">Rinkeby</option>
+        <option value="42">Kovan</option>
+    </select>
+    <br>
     <br>
     <input id="create" type="button" class="btn btn-success" value="Create your TokenScript!"/>
 </div>
