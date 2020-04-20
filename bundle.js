@@ -169,7 +169,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function parseFunctionToAttribute(func, contractName) {
-        if(func.stateMutability === "view" || func.stateMutability === "pure") {
+        //can only handle simple gets without inputs
+        if((func.stateMutability === "view" || func.stateMutability === "pure") && func.inputs.length === 0) {
             return getAttribute(func, contractName);
         } else {
             return "";
@@ -208,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let eventParams = getEventParams(eventABI);
         let eventTypeNode = document.createElement("ts:contract");
         //Can't set the contract name to be the same as the previously declared
-        eventTypeNode.setAttribute("name", "contractWithEvent");
+        eventTypeNode.setAttribute("name", "contractWithEvent" + eventName);
         let addressNode = document.createElement("ts:address");
         addressNode.setAttribute("network", "1");
         addressNode.innerText = contractAddress;
