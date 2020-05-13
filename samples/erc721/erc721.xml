@@ -13,9 +13,9 @@
           xmlns:ethereum="urn:ethereum:constantinople"
           custodian="false"
 >
-    <ts:name>
+    <ts:label>
         <ts:string xml:lang="en"></ts:string>
-    </ts:name>
+    </ts:label>
     <ts:contract interface="erc721" name="">
         <ts:address network="1"></ts:address>     <!--mainnet-->
     </ts:contract>
@@ -27,24 +27,24 @@
     </ts:origins>
 
     <ts:cards>
-        <ts:action>
-            <ts:name>
+        <ts:card type="action">
+            <ts:label>
                 <ts:string xml:lang="en">About</ts:string>
-            </ts:name>
+            </ts:label>
             <ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
                 <xhtml:style type="text/css">&style;</xhtml:style>
                 <xhtml:script type="text/javascript">&about.en;</xhtml:script>
             </ts:view>
-        </ts:action>
+        </ts:card>
 
-        <ts:action>
-            <ts:name>
+        <ts:card type="action">
+            <ts:label>
                 <ts:string xml:lang="en">Approve</ts:string>
-            </ts:name>
+            </ts:label>
             <ts:attribute-type id="approvalAddress" syntax="1.3.6.1.4.1.1466.115.121.1.36">
-                <ts:name>
+                <ts:label>
                     <ts:string xml:lang="en">Approval Address</ts:string>
-                </ts:name>
+                </ts:label>
                 <ts:origins>
                     <ts:user-entry as="address"/>
                 </ts:origins>
@@ -61,10 +61,10 @@
                 <xhtml:style type="text/css">&style;</xhtml:style>
                 <xhtml:script type="text/javascript">&approve.en;</xhtml:script>
             </ts:view>
-        </ts:action>
+        </ts:card>
     </ts:cards>
 
-    <ts:attribute-type id="symbol" syntax="1.3.6.1.4.1.1466.115.121.1.26">
+    <ts:attribute-type name="symbol" syntax="1.3.6.1.4.1.1466.115.121.1.26">
         <ts:origins>
             <ethereum:call as="utf8" function="symbol">
             </ethereum:call>

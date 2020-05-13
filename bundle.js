@@ -137,26 +137,26 @@ document.addEventListener("DOMContentLoaded", () => {
         //set network
         xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].setAttribute("network", network);
 
-        xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
+        xmlFile.getElementsByTagName("ts:label")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].innerHTML = contractAddress;
         xmlFile.getElementsByTagName("ts:origins")[0].getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
         xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
-        xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
+        xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[1]
             .getElementsByTagName("ts:transaction")[0].
         getElementsByTagName("ethereum:call")[0].setAttribute("contract", contractName);
 
         //set stripped entity tags
-        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[0]
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[0]
             .getElementsByTagName("ts:view")[0].getElementsByTagName("xhtml:style")[0].innerHTML = "&style;";
         xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0]
-            .getElementsByTagName("ts:action")[0].getElementsByTagName("ts:view")[0]
+            .getElementsByTagName("ts:card")[0].getElementsByTagName("ts:view")[0]
             .getElementsByTagName("xhtml:script")[0].innerHTML = "&about.en;";
 
-        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[1]
             .getElementsByTagName("ts:view")[0].getElementsByTagName("xhtml:style")[0].innerHTML = "&style;";
         xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0]
-            .getElementsByTagName("ts:action")[1].getElementsByTagName("ts:view")[0]
+            .getElementsByTagName("ts:card")[1].getElementsByTagName("ts:view")[0]
             .getElementsByTagName("xhtml:script")[0].innerHTML = "&approve.en;";
 
         return xmlFile;
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let eventParams = [];
         for(let eventInput of eventAbi.inputs) {
             let elementNode = document.createElement("element");
-            elementNode.setAttribute("name", eventInput.name);
+            elementNode.setAttribute("label", eventInput.name);
             elementNode.setAttribute("ethereum:type", eventInput.type);
             elementNode.setAttribute("ethereum:indexed", eventInput.indexed);
             eventParams.push(elementNode);
@@ -186,12 +186,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function getAttribute(func, contractName) {
         let data = getData(func);
         let attributeTypeNode = document.createElement("ts:attribute-type");
-        attributeTypeNode.setAttribute("id", func.name);
+        attributeTypeNode.setAttribute("name", func.name);
         let syntax = getSyntax(func.outputs);
         if(syntax !== "") {
             attributeTypeNode.setAttribute("syntax", syntax);
         }
-        let nameNode = document.createElement("ts:name");
+        let nameNode = document.createElement("ts:label");
         let stringNodeName = document.createElement("ts:string");
         stringNodeName.setAttribute("xml:lang", "en");
         stringNodeName.innerText = func.name;
@@ -305,9 +305,9 @@ module.exports = {
         "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
         "          custodian=\"false\"\n" +
         ">\n" +
-        "    <ts:name>\n" +
+        "    <ts:label>\n" +
         "        <ts:string xml:lang=\"en\"></ts:string>\n" +
-        "    </ts:name>\n" +
+        "    </ts:label>\n" +
         "    <ts:contract interface=\"erc20\" name=\"\">\n" +
         "        <ts:address network=\"1\"></ts:address>     <!--mainnet-->\n" +
         "    </ts:contract>\n" +
@@ -319,24 +319,24 @@ module.exports = {
         "    </ts:origins>\n" +
         "\n" +
         "    <ts:cards>\n" +
-        "        <ts:action>\n" +
-        "            <ts:name>\n" +
+        "        <ts:card type=\"action\">\n" +
+        "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">About</ts:string>\n" +
-        "            </ts:name>\n" +
+        "            </ts:label>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
         "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
         "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
-        "        </ts:action>\n" +
+        "        </ts:card>\n" +
         "\n" +
-        "        <ts:action>\n" +
-        "            <ts:name>\n" +
+        "        <ts:card type=\"action\">\n" +
+        "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
-        "            </ts:name>\n" +
+        "            </ts:label>\n" +
         "            <ts:attribute-type id=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
-        "                <ts:name>\n" +
+        "                <ts:label>\n" +
         "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
-        "                </ts:name>\n" +
+        "                </ts:label>\n" +
         "                <ts:origins>\n" +
         "                    <ts:user-entry as=\"address\"/>\n" +
         "                </ts:origins>\n" +
@@ -353,10 +353,10 @@ module.exports = {
         "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
         "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
-        "        </ts:action>\n" +
+        "        </ts:card>\n" +
         "    </ts:cards>\n" +
         "\n" +
-        "    <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
+        "    <ts:attribute-type name=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
         "        <ts:origins>\n" +
         "            <ethereum:call as=\"utf8\" function=\"symbol\">\n" +
         "            </ethereum:call>\n" +
@@ -380,9 +380,9 @@ module.exports = {
         "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
         "          custodian=\"false\"\n" +
         ">\n" +
-        "    <ts:name>\n" +
+        "    <ts:label>\n" +
         "        <ts:string xml:lang=\"en\"></ts:string>\n" +
-        "    </ts:name>\n" +
+        "    </ts:label>\n" +
         "    <ts:contract interface=\"erc721\" name=\"\">\n" +
         "        <ts:address network=\"1\"></ts:address>     <!--mainnet-->\n" +
         "    </ts:contract>\n" +
@@ -394,24 +394,24 @@ module.exports = {
         "    </ts:origins>\n" +
         "\n" +
         "    <ts:cards>\n" +
-        "        <ts:action>\n" +
-        "            <ts:name>\n" +
+        "        <ts:card type=\"action\">\n" +
+        "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">About</ts:string>\n" +
-        "            </ts:name>\n" +
+        "            </ts:label>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
         "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
         "                <xhtml:script type=\"text/javascript\">&about.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
-        "        </ts:action>\n" +
+        "        </ts:card>\n" +
         "\n" +
-        "        <ts:action>\n" +
-        "            <ts:name>\n" +
+        "        <ts:card type=\"action\">\n" +
+        "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
-        "            </ts:name>\n" +
+        "            </ts:label>\n" +
         "            <ts:attribute-type id=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
-        "                <ts:name>\n" +
+        "                <ts:label>\n" +
         "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
-        "                </ts:name>\n" +
+        "                </ts:label>\n" +
         "                <ts:origins>\n" +
         "                    <ts:user-entry as=\"address\"/>\n" +
         "                </ts:origins>\n" +
@@ -428,10 +428,10 @@ module.exports = {
         "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
         "                <xhtml:script type=\"text/javascript\">&approve.en;</xhtml:script>\n" +
         "            </ts:view>\n" +
-        "        </ts:action>\n" +
+        "        </ts:card>\n" +
         "    </ts:cards>\n" +
         "\n" +
-        "    <ts:attribute-type id=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
+        "    <ts:attribute-type name=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
         "        <ts:origins>\n" +
         "            <ethereum:call as=\"utf8\" function=\"symbol\">\n" +
         "            </ethereum:call>\n" +

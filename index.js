@@ -136,26 +136,26 @@ document.addEventListener("DOMContentLoaded", () => {
         //set network
         xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].setAttribute("network", network);
 
-        xmlFile.getElementsByTagName("ts:name")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
+        xmlFile.getElementsByTagName("ts:label")[0].getElementsByTagName("ts:string")[0].innerHTML = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].getElementsByTagName("ts:address")[0].innerHTML = contractAddress;
         xmlFile.getElementsByTagName("ts:origins")[0].getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
         xmlFile.getElementsByTagName("ts:contract")[0].attributes.name.value = contractName;
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
-        xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
+        xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[1]
             .getElementsByTagName("ts:transaction")[0].
         getElementsByTagName("ethereum:call")[0].setAttribute("contract", contractName);
 
         //set stripped entity tags
-        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[0]
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[0]
             .getElementsByTagName("ts:view")[0].getElementsByTagName("xhtml:style")[0].innerHTML = "&style;";
         xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0]
-            .getElementsByTagName("ts:action")[0].getElementsByTagName("ts:view")[0]
+            .getElementsByTagName("ts:card")[0].getElementsByTagName("ts:view")[0]
             .getElementsByTagName("xhtml:script")[0].innerHTML = "&about.en;";
 
-        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
+        xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[1]
             .getElementsByTagName("ts:view")[0].getElementsByTagName("xhtml:style")[0].innerHTML = "&style;";
         xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0]
-            .getElementsByTagName("ts:action")[1].getElementsByTagName("ts:view")[0]
+            .getElementsByTagName("ts:card")[1].getElementsByTagName("ts:view")[0]
             .getElementsByTagName("xhtml:script")[0].innerHTML = "&approve.en;";
 
         return xmlFile;
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let eventParams = [];
         for(let eventInput of eventAbi.inputs) {
             let elementNode = document.createElement("element");
-            elementNode.setAttribute("name", eventInput.name);
+            elementNode.setAttribute("label", eventInput.name);
             elementNode.setAttribute("ethereum:type", eventInput.type);
             elementNode.setAttribute("ethereum:indexed", eventInput.indexed);
             eventParams.push(elementNode);
@@ -185,12 +185,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function getAttribute(func, contractName) {
         let data = getData(func);
         let attributeTypeNode = document.createElement("ts:attribute-type");
-        attributeTypeNode.setAttribute("id", func.name);
+        attributeTypeNode.setAttribute("name", func.name);
         let syntax = getSyntax(func.outputs);
         if(syntax !== "") {
             attributeTypeNode.setAttribute("syntax", syntax);
         }
-        let nameNode = document.createElement("ts:name");
+        let nameNode = document.createElement("ts:label");
         let stringNodeName = document.createElement("ts:string");
         stringNodeName.setAttribute("xml:lang", "en");
         stringNodeName.innerText = func.name;
