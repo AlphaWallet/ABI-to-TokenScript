@@ -4,18 +4,18 @@
         <!ENTITY about.en SYSTEM "about.en.js">
         <!ENTITY approve.en SYSTEM "approve.en.js">
         ]>
-<ts:token xmlns:ts="http://tokenscript.org/2020/03/tokenscript"
+<ts:token xmlns:ts="http://tokenscript.org/2020/06/tokenscript"
           xmlns:xhtml="http://www.w3.org/1999/xhtml"
           xmlns:xml="http://www.w3.org/XML/1998/namespace"
-          xsi:schemaLocation="http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd"
+          xsi:schemaLocation="http://tokenscript.org/2020/06/tokenscript http://tokenscript.org/2020/06/tokenscript.xsd"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xmlns:asnx="urn:ietf:params:xml:ns:asnx"
           xmlns:ethereum="urn:ethereum:constantinople"
           custodian="false"
 >
-    <ts:name>
+    <ts:label>
         <ts:string xml:lang="en"></ts:string>
-    </ts:name>
+    </ts:label>
     <ts:contract interface="erc721" name="">
         <ts:address network="1"></ts:address>     <!--mainnet-->
     </ts:contract>
@@ -27,47 +27,47 @@
     </ts:origins>
 
     <ts:cards>
-        <ts:action>
-            <ts:name>
+        <ts:card type="action">
+            <ts:label>
                 <ts:string xml:lang="en">About</ts:string>
-            </ts:name>
+            </ts:label>
             <ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
                 <xhtml:style type="text/css">&style;</xhtml:style>
                 <xhtml:script type="text/javascript">&about.en;</xhtml:script>
             </ts:view>
-        </ts:action>
+        </ts:card>
 
-        <ts:action>
-            <ts:name>
+        <ts:card type="action">
+            <ts:label>
                 <ts:string xml:lang="en">Approve</ts:string>
-            </ts:name>
+            </ts:label>
             <ts:attribute-type id="approvalAddress" syntax="1.3.6.1.4.1.1466.115.121.1.36">
-                <ts:name>
+                <ts:label>
                     <ts:string xml:lang="en">Approval Address</ts:string>
-                </ts:name>
+                </ts:label>
                 <ts:origins>
                     <ts:user-entry as="address"/>
                 </ts:origins>
             </ts:attribute-type>
             <ts:transaction>
-                <ts:ethereum function="approve" contract="" as="uint">
+                <ethereum:call function="approve" contract="" as="uint">
                     <ts:data>
                         <ts:address ref="approvalAddress"/>
                         <ts:uint256 ref="tokenId"/>
                     </ts:data>
-                </ts:ethereum>
+                </ethereum:call>
             </ts:transaction>
             <ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
                 <xhtml:style type="text/css">&style;</xhtml:style>
                 <xhtml:script type="text/javascript">&approve.en;</xhtml:script>
             </ts:view>
-        </ts:action>
+        </ts:card>
     </ts:cards>
-    <!-- placeholder for future functions -->
-    <ts:attribute-type id="symbol" syntax="1.3.6.1.4.1.1466.115.121.1.26">
+
+    <ts:attribute-type name="symbol" syntax="1.3.6.1.4.1.1466.115.121.1.26">
         <ts:origins>
-            <ts:ethereum as="utf8" function="symbol">
-            </ts:ethereum>
+            <ethereum:call as="utf8" function="symbol">
+            </ethereum:call>
         </ts:origins>
     </ts:attribute-type>
 </ts:token>
