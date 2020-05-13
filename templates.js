@@ -14,10 +14,10 @@ module.exports = {
         "        <!ENTITY about.en SYSTEM \"about.en.js\">\n" +
         "        <!ENTITY approve.en SYSTEM \"approve.en.js\">\n" +
         "        ]>\n" +
-        "<ts:token xmlns:ts=\"http://tokenscript.org/2020/03/tokenscript\"\n" +
+        "<ts:token xmlns:ts=\"http://tokenscript.org/2020/06/tokenscript\"\n" +
         "          xmlns:xhtml=\"http://www.w3.org/1999/xhtml\"\n" +
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
-        "          xsi:schemaLocation=\"http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd\"\n" +
+        "          xsi:schemaLocation=\"http://tokenscript.org/2020/06/tokenscript http://tokenscript.org/2020/06/tokenscript.xsd\"\n" +
         "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
         "          xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"\n" +
         "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
@@ -89,10 +89,10 @@ module.exports = {
         "        <!ENTITY about.en SYSTEM \"about.en.js\">\n" +
         "        <!ENTITY approve.en SYSTEM \"approve.en.js\">\n" +
         "        ]>\n" +
-        "<ts:token xmlns:ts=\"http://tokenscript.org/2020/03/tokenscript\"\n" +
+        "<ts:token xmlns:ts=\"http://tokenscript.org/2020/06/tokenscript\"\n" +
         "          xmlns:xhtml=\"http://www.w3.org/1999/xhtml\"\n" +
         "          xmlns:xml=\"http://www.w3.org/XML/1998/namespace\"\n" +
-        "          xsi:schemaLocation=\"http://tokenscript.org/2020/03/tokenscript http://tokenscript.org/2020/03/tokenscript.xsd\"\n" +
+        "          xsi:schemaLocation=\"http://tokenscript.org/2020/06/tokenscript http://tokenscript.org/2020/06/tokenscript.xsd\"\n" +
         "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
         "          xmlns:asnx=\"urn:ietf:params:xml:ns:asnx\"\n" +
         "          xmlns:ethereum=\"urn:ethereum:constantinople\"\n" +
