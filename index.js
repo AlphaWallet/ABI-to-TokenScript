@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
         xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[1]
             .getElementsByTagName("ts:transaction")[0].
-        getElementsByTagName("ts:ethereum")[0].setAttribute("contract", contractName);
+        getElementsByTagName("ethereum:call")[0].setAttribute("contract", contractName);
 
         //set stripped entity tags
         xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:action")[0]
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         nameNode.appendChild(stringNodeName);
         attributeTypeNode.appendChild(nameNode);
         let originNode = document.createElement("ts:origins");
-        let ethereumNode = document.createElement("ts:ethereum");
+        let ethereumNode = document.createElement("ethereum:call");
         ethereumNode.setAttribute("function", func.name);
         ethereumNode.setAttribute("contract", contractName);
         let AS = getAS(func.outputs);
