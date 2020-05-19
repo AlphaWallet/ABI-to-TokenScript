@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if(outputs[0].type.includes("byte")) {
             return "1.3.6.1.4.1.1466.115.121.1.6";
         } else {
-            return "void";
+            return "1.3.6.1.4.1.1466.115.121.1.15";
         }
     }
 
