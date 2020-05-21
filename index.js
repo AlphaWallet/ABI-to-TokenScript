@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
         xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[1]
             .getElementsByTagName("ts:transaction")[0].
-        getElementsByTagName("ethereum:call")[0].setAttribute("contract", contractName);
+        getElementsByTagName("ethereum:transaction")[0].setAttribute("contract", contractName);
 
         //set stripped entity tags
         xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[0]
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let eventParams = [];
         for(let eventInput of eventAbi.inputs) {
             let elementNode = document.createElement("element");
-            elementNode.setAttribute("label", eventInput.name);
+            elementNode.setAttribute("name", eventInput.name);
             elementNode.setAttribute("ethereum:type", eventInput.type);
             elementNode.setAttribute("ethereum:indexed", eventInput.indexed);
             eventParams.push(elementNode);
@@ -203,6 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let AS = getAS(func.outputs);
         if(AS !== "") {
             ethereumNode.setAttribute("as", AS);
+        } else {
+            //do not include as
         }
         ethereumNode.innerText = data;
         originNode.appendChild(ethereumNode);
@@ -257,6 +259,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return "utf8";
             } else if(ethType.includes("address")) {
                 return "address";
+            } else {
+                return "";
             }
         }
     }

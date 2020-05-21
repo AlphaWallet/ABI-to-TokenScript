@@ -6,7 +6,7 @@ class Token {
     }
 
     render() {
-        let message = "Approve someone to use your tokens!";
+        let message = "Approve someone to use your token!";
         return`
         <div class="ui container">
           <div class="ui segment">

@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         xmlFile.getElementsByTagName("ts:contract")[0].children[0].value = contractAddress;
         xmlFile.getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[1]
             .getElementsByTagName("ts:transaction")[0].
-        getElementsByTagName("ethereum:call")[0].setAttribute("contract", contractName);
+        getElementsByTagName("ethereum:transaction")[0].setAttribute("contract", contractName);
 
         //set stripped entity tags
         xmlFile.getElementsByTagName("ts:token")[0].getElementsByTagName("ts:cards")[0].getElementsByTagName("ts:card")[0]
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let eventParams = [];
         for(let eventInput of eventAbi.inputs) {
             let elementNode = document.createElement("element");
-            elementNode.setAttribute("label", eventInput.name);
+            elementNode.setAttribute("name", eventInput.name);
             elementNode.setAttribute("ethereum:type", eventInput.type);
             elementNode.setAttribute("ethereum:indexed", eventInput.indexed);
             eventParams.push(elementNode);
@@ -204,6 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let AS = getAS(func.outputs);
         if(AS !== "") {
             ethereumNode.setAttribute("as", AS);
+        } else {
+            //do not include as
         }
         ethereumNode.innerText = data;
         originNode.appendChild(ethereumNode);
@@ -258,6 +260,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return "utf8";
             } else if(ethType.includes("address")) {
                 return "address";
+            } else {
+                return "";
             }
         }
     }
@@ -314,8 +318,7 @@ module.exports = {
         "\n" +
         "    <ts:origins>\n" +
         "        <!-- Define the contract which holds the token that the user will use -->\n" +
-        "        <ts:ethereum contract=\"\"> <!-- as above ts:contract name -->\n" +
-        "        </ts:ethereum>\n" +
+        "        <ts:ethereum contract=\"\"/> <!-- as above ts:contract name -->\n" +
         "    </ts:origins>\n" +
         "\n" +
         "    <ts:cards>\n" +
@@ -333,7 +336,7 @@ module.exports = {
         "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
         "            </ts:label>\n" +
-        "            <ts:attribute-type id=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
+        "            <ts:attribute-type name=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
         "                <ts:label>\n" +
         "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
         "                </ts:label>\n" +
@@ -342,12 +345,12 @@ module.exports = {
         "                </ts:origins>\n" +
         "            </ts:attribute-type>\n" +
         "            <ts:transaction>\n" +
-        "                <ethereum:call function=\"approve\" contract=\"\" as=\"uint\">\n" +
+        "                <ethereum:transaction function=\"approve\" contract=\"\" as=\"uint\">\n" +
         "                    <ts:data>\n" +
         "                        <ts:address ref=\"approvalAddress\"/>\n" +
         "                        <ts:uint256>115792089237316195423570985008687907853269984665640564039457584007913129639935</ts:uint256>\n" +
         "                    </ts:data>\n" +
-        "                </ethereum:call>\n" +
+        "                </ethereum:transaction>\n" +
         "            </ts:transaction>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
         "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
@@ -355,14 +358,6 @@ module.exports = {
         "            </ts:view>\n" +
         "        </ts:card>\n" +
         "    </ts:cards>\n" +
-        "\n" +
-        "    <ts:attribute-type name=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
-        "        <ts:origins>\n" +
-        "            <ethereum:call as=\"utf8\" function=\"symbol\">\n" +
-        "            </ethereum:call>\n" +
-        "        </ts:origins>\n" +
-        "    </ts:attribute-type>\n" +
-        "\n" +
         "</ts:token>\n",
 
     erc721XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -389,8 +384,7 @@ module.exports = {
         "\n" +
         "    <ts:origins>\n" +
         "        <!-- Define the contract which holds the token that the user will use -->\n" +
-        "        <ts:ethereum contract=\"\"> <!-- as above ts:contract name -->\n" +
-        "        </ts:ethereum>\n" +
+        "        <ts:ethereum contract=\"\"/> <!-- as above ts:contract name -->\n" +
         "    </ts:origins>\n" +
         "\n" +
         "    <ts:cards>\n" +
@@ -408,7 +402,7 @@ module.exports = {
         "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
         "            </ts:label>\n" +
-        "            <ts:attribute-type id=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
+        "            <ts:attribute-type name=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
         "                <ts:label>\n" +
         "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
         "                </ts:label>\n" +
@@ -417,12 +411,12 @@ module.exports = {
         "                </ts:origins>\n" +
         "            </ts:attribute-type>\n" +
         "            <ts:transaction>\n" +
-        "                <ethereum:call function=\"approve\" contract=\"\" as=\"uint\">\n" +
+        "                <ethereum:transaction function=\"approve\" contract=\"\" as=\"uint\">\n" +
         "                    <ts:data>\n" +
         "                        <ts:address ref=\"approvalAddress\"/>\n" +
         "                        <ts:uint256 ref=\"tokenId\"/>\n" +
         "                    </ts:data>\n" +
-        "                </ethereum:call>\n" +
+        "                </ethereum:transaction>\n" +
         "            </ts:transaction>\n" +
         "            <ts:view xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" +
         "                <xhtml:style type=\"text/css\">&style;</xhtml:style>\n" +
@@ -430,13 +424,6 @@ module.exports = {
         "            </ts:view>\n" +
         "        </ts:card>\n" +
         "    </ts:cards>\n" +
-        "\n" +
-        "    <ts:attribute-type name=\"symbol\" syntax=\"1.3.6.1.4.1.1466.115.121.1.26\">\n" +
-        "        <ts:origins>\n" +
-        "            <ethereum:call as=\"utf8\" function=\"symbol\">\n" +
-        "            </ethereum:call>\n" +
-        "        </ts:origins>\n" +
-        "    </ts:attribute-type>\n" +
         "</ts:token>\n",
 
     exampleABI: [
