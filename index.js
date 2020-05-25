@@ -184,12 +184,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getAttribute(func, contractName) {
         let data = getData(func);
-        let attributeTypeNode = document.createElement("ts:attribute-type");
+        let attributeTypeNode = document.createElement("ts:attribute");
         attributeTypeNode.setAttribute("name", func.name);
+        let type = document.createElement("ts:type");
+        let syntaxElement = document.createElement("ts:syntax");
         let syntax = getSyntax(func.outputs);
         if(syntax !== "") {
-            attributeTypeNode.setAttribute("syntax", syntax);
+            syntaxElement.innerText = syntax;
         }
+        type.appendChild(syntaxElement);
+        attributeTypeNode.appendChild(type);
         let nameNode = document.createElement("ts:label");
         let stringNodeName = document.createElement("ts:string");
         stringNodeName.setAttribute("xml:lang", "en");

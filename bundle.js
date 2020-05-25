@@ -185,12 +185,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getAttribute(func, contractName) {
         let data = getData(func);
-        let attributeTypeNode = document.createElement("ts:attribute-type");
+        let attributeTypeNode = document.createElement("ts:attribute");
         attributeTypeNode.setAttribute("name", func.name);
+        let type = document.createElement("ts:type");
+        let syntaxElement = document.createElement("ts:syntax");
         let syntax = getSyntax(func.outputs);
         if(syntax !== "") {
-            attributeTypeNode.setAttribute("syntax", syntax);
+            syntaxElement.innerText = syntax;
         }
+        type.appendChild(syntaxElement);
+        attributeTypeNode.appendChild(type);
         let nameNode = document.createElement("ts:label");
         let stringNodeName = document.createElement("ts:string");
         stringNodeName.setAttribute("xml:lang", "en");
@@ -336,14 +340,17 @@ module.exports = {
         "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
         "            </ts:label>\n" +
-        "            <ts:attribute-type name=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
+        "            <ts:attribute name=\"approvalAddress\">\n" +
+        "                <ts:type>\n" +
+        "                    <ts:syntax>1.3.6.1.4.1.1466.115.121.1.36</ts:syntax>\n" +
+        "                </ts:type>\n" +
         "                <ts:label>\n" +
         "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
         "                </ts:label>\n" +
         "                <ts:origins>\n" +
         "                    <ts:user-entry as=\"address\"/>\n" +
         "                </ts:origins>\n" +
-        "            </ts:attribute-type>\n" +
+        "            </ts:attribute>\n" +
         "            <ts:transaction>\n" +
         "                <ethereum:transaction function=\"approve\" contract=\"\" as=\"uint\">\n" +
         "                    <ts:data>\n" +
@@ -402,14 +409,17 @@ module.exports = {
         "            <ts:label>\n" +
         "                <ts:string xml:lang=\"en\">Approve</ts:string>\n" +
         "            </ts:label>\n" +
-        "            <ts:attribute-type name=\"approvalAddress\" syntax=\"1.3.6.1.4.1.1466.115.121.1.36\">\n" +
+        "            <ts:attribute name=\"approvalAddress\">\n" +
+        "                <ts:type>\n" +
+        "                    <ts:syntax>1.3.6.1.4.1.1466.115.121.1.36</ts:syntax>\n" +
+        "                </ts:type>\n" +
         "                <ts:label>\n" +
         "                    <ts:string xml:lang=\"en\">Approval Address</ts:string>\n" +
         "                </ts:label>\n" +
         "                <ts:origins>\n" +
         "                    <ts:user-entry as=\"address\"/>\n" +
         "                </ts:origins>\n" +
-        "            </ts:attribute-type>\n" +
+        "            </ts:attribute>\n" +
         "            <ts:transaction>\n" +
         "                <ethereum:transaction function=\"approve\" contract=\"\" as=\"uint\">\n" +
         "                    <ts:data>\n" +
