@@ -13,11 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let network = "1";
 
+    let contractsFromEvents = [];
+    let mainContractAddress = "";
+
     const templates = require("./templates");
 
     document.getElementById("create").addEventListener("click", () => {
         let contractName = document.getElementById("contractName").value;
         let contractAddress = document.getElementById("contractAddress").value;
+        mainContractAddress = contractAddress;
         let abi = getABI(document.getElementById("contractABI").value);
         let erc20Checked = document.getElementById("erc20").checked;
         network = document.getElementById("network").value;
@@ -66,8 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     if(attribute !== "") attributesToAdd.push(attribute);
                     break;
                 case Types.EVENT:
-                    let event = getEvent(func.name, contractAddress, func);
-                    eventsToAdd.push(event);
+                    let event = getEvent(func.name, contractName, contractAddress, func);
+                    eventsToAdd.push(event.event);
+                    addEventContractObj(event.contractObject);
                     break;
                 case Types.TUPLE:
                     break;
@@ -77,6 +82,18 @@ document.addEventListener("DOMContentLoaded", () => {
         //TODO fix xhtml problem properly rather than replace
         let xmlAsString = new XMLSerializer().serializeToString(updatedXML).replace(/xhtml:/g,"").replace(/amp;/g, "");
         downloadFilesAsZip(erc, contractName, vkbeautify.xml(xmlAsString));
+    }
+
+    function addEventContractObj(contractObj) {
+        //if event is sourced from the TS contract, there is no need to add it again
+        if(contractObj.address === mainContractAddress) return;
+        for(let contract of contractsFromEvents) {
+            if(contract.address === contractObj.address) {
+                //contract already included
+                return;
+            }
+        }
+        contractsFromEvents.push(contractObj);
     }
 
     function setValuesWithoutABI(erc, xmlFile, contractAddress, contractName) {
@@ -122,12 +139,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //TODO pass by ref rather than value
     function appendToTS(attributes, events, xmlFile) {
-        let child = xmlFile.getElementsByTagName("ts:contract")[0];
         for(let attribute of attributes) {
             xmlFile.getElementsByTagName("ts:token")[0].appendChild(attribute);
         }
         for(let event of events) {
-            xmlFile.getElementsByTagName("ts:token")[0].insertBefore(event, child);
+            xmlFile.getElementsByTagName("ts:token")[0].insertBefore(event, xmlFile.getElementsByTagName("ts:label")[0]);
+        }
+        for(let contract of contractsFromEvents) {
+            xmlFile.getElementsByTagName("ts:token")[0].insertBefore(contract.element, xmlFile.getElementsByTagName("ts:contract")[0]);
         }
         return xmlFile;
     }
@@ -216,24 +235,36 @@ document.addEventListener("DOMContentLoaded", () => {
         return attributeTypeNode;
     }
 
-    function getEvent(eventName, contractAddress, eventABI) {
+    function getEvent(eventName, contractName, contractAddress, eventABI) {
+        let eventObject = {};
         let eventParams = getEventParams(eventABI);
-        let eventTypeNode = document.createElement("ts:contract");
-        //Can't set the contract name to be the same as the previously declared
-        eventTypeNode.setAttribute("name", "contractWithEvent" + eventName);
-        let addressNode = document.createElement("ts:address");
-        addressNode.setAttribute("network", network);
-        addressNode.innerText = contractAddress;
         let moduleNode = document.createElement("asnx:module");
-        moduleNode.setAttribute("name", eventName);
+        moduleNode.setAttribute("name", contractName + "-event-" + eventName);
+        let namedTypeNode = document.createElementNS(null, "namedType");
+        namedTypeNode.setAttribute("name", eventName);
         let sequenceNode = document.createElement("sequence");
         eventParams.map((eventParam) => {
             sequenceNode.appendChild(eventParam);
         });
-        moduleNode.appendChild(sequenceNode);
-        eventTypeNode.appendChild(addressNode);
-        eventTypeNode.appendChild(moduleNode);
-        return eventTypeNode;
+        namedTypeNode.appendChild(sequenceNode);
+        moduleNode.appendChild(namedTypeNode);
+        eventObject.event = moduleNode;
+        eventObject.contractObject = getEventContractObject(contractName, contractAddress);
+        return eventObject;
+    }
+
+    function getEventContractObject(contractName, contractAddress) {
+        let eventContractObject = {};
+        let contractObjectFromEvent = document.createElement("ts:contract");
+        //Can't set the contract name to be the same as the previously declared
+        contractObjectFromEvent.setAttribute("name", "contractWithEvent" + contractName);
+        let addressNode = document.createElement("ts:address");
+        addressNode.setAttribute("network", network);
+        addressNode.innerText = contractAddress;
+        contractObjectFromEvent.appendChild(addressNode);
+        eventContractObject.element = contractObjectFromEvent;
+        eventContractObject.address = contractAddress;
+        return eventContractObject;
     }
 
     function getData(func) {
