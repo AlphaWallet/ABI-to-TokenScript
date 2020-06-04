@@ -113,6 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
         folder.file("shared.css", cssPromise, null);
         let makeFilePromise = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/Makefile");
         folder.file("Makefile", makeFilePromise, null);
+        let readmePromise = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/README.md");
+        folder.file("README.md", readmePromise, null);
         switch(erc) {
             case ERC.ERC20:
                 let aboutPromise20 = $.get("https://raw.githubusercontent.com/AlphaWallet/abi-to-TokenScript/gh-pages/samples/erc20/about.en.js");
