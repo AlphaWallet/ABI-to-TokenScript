@@ -244,11 +244,13 @@ document.addEventListener("DOMContentLoaded", () => {
         moduleNode.setAttribute("name", contractName + "-event-" + eventName);
         let namedTypeNode = document.createElementNS(null, "namedType");
         namedTypeNode.setAttribute("name", eventName);
+        let typeNode = document.createElement("type");
         let sequenceNode = document.createElement("sequence");
         eventParams.map((eventParam) => {
             sequenceNode.appendChild(eventParam);
         });
-        namedTypeNode.appendChild(sequenceNode);
+        typeNode.appendChild(sequenceNode);
+        namedTypeNode.appendChild(typeNode);
         moduleNode.appendChild(namedTypeNode);
         eventObject.event = moduleNode;
         eventObject.contractObject = getEventContractObject(contractName, contractAddress);
